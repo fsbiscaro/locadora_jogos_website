@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+
+</head>
+
+<body>
+    <input type="text" id="txtFiltro"><br>
+    <table border="1" id="tblUsuarios">
+        <th>id</th>
+        <th>nome</th>
+        <th>cpf</th>
+        <th>data de nascimento</th>
+        <th>endereço</th>
+        <th>email</th>
+        <th>telefone</th>
+        <th>id do cargo</th>
+        <th>Excluir</th>
+        <th>Atualizar</th>
+    </table>
+</body>
+
+<script src="/js/sessao.js"></script>
+
+<script>
+    const obj = existeSessao();
+    const token = localStorage.getItem("token");
+    const URI = "/usuario";
+    let usuarios_json = {};
+    const txtFiltro = document.getElementById("txtFiltro");
+    const tblUsuarios = document.getElementById("tblUsuarios");
+    recoverUsuarios()
+
+    function recoverUsuarios(){
+        const requisicao = fetch(URI, {
+            method: 'get',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': "Bearer "+ token +""
+            }
+        });
+
+        requisicao.then((response) => { 
+            return response.text(); 
+        }).then(jsonTextoResposta => {
+            const obj = JSON.parse(jsonTextoResposta);
+            console.log(jsonTextoResposta);
+                if (obj.status === true) {
+                    localStorage.setItem("token", obj.token);
+                    usuarios_json = obj.dados;
+                    construirTabela();
+                } else {
+                    divResposta.textContent = "Login inválido.";
+                }
+        })
+    }
+
+    function construirTabela(filtro){
+        for(let usuario of usuarios_json){
+            if(filtro != null){
+                let id_usuario = usuario.id_usuario.toLowerCase();
+                let nome_usuario = usuario.nome_usuario.toLowerCase();
+                let cpf_usuario = usuario.cpf_usuario.toLowerCase();
+                let data_nascimento_usuario = usuario.data_nascimento_usuario.toLowerCase();
+                let endereco_usuario = usuario.endereco_usuario.toLowerCase();
+                let email_usuario = usuario.email_usuario.toLowerCase();
+                let telefone_usuario = usuario.telefone_usuario.toLowerCase();
+                let id_cargo = usuario.id_cargo.toLowerCase();
+
+                filtro = filtro.toLowerCase();
+                if(nome_usuario.includes(filtro) === false){
+                    continue;
+                }
+            }
+
+            const linha = document.createElement("tr");
+            const coluna_id_usuario = document.createElement("td");
+            const coluna_nome_usuario = document.createElement("td");
+            const coluna_cpf_usuario = document.createElement("td");
+            const coluna_data_nascimento_usuario = document.createElement("td");
+            const coluna_endereco_usuario = document.createElement("td");
+            const coluna_email_usuario = document.createElement("td");
+            const coluna_telefone_usuario = document.createElement("td");
+            const coluna_id_cargo = document.createElement("td");
+            const coluna_excluir = document.createElement("td");
+            const coluna_atualizar = document.createElement("td");
+
+            coluna_id_usuario.append(document.createTextNode(usuario.id_usuario));
+            coluna_nome_usuario.append(document.createTextNode(usuario.nome_usuario));
+            coluna_cpf_usuario.append(document.createTextNode(usuario.cpf_usuario));
+            coluna_data_nascimento_usuario.append(document.createTextNode(usuario.data_nascimento_usuario));
+            coluna_endereco_usuario.append(document.createTextNode(usuario.endereco_usuario));
+            coluna_email_usuario.append(document.createTextNode(usuario.email_usuario));
+            coluna_telefone_usuario.append(document.createTextNode(usuario.telefone_usuario));
+            coluna_id_cargo.append(document.createTextNode(usuario.id_cargo ));
+            coluna_excluir.append();
+            coluna_atualizar.append();
+
+            linha.appendChild(coluna_id_usuario);
+            linha.appendChild(coluna_nome_usuario);
+            linha.appendChild(coluna_cpf_usuario);
+            linha.appendChild(coluna_data_nascimento_usuario);
+            linha.appendChild(coluna_endereco_usuario);
+            linha.appendChild(coluna_email_usuario);
+            linha.appendChild(coluna_telefone_usuario);
+            linha.appendChild(coluna_id_cargo);
+
+            tblUsuarios.appendChild(linha)
+
+        }
+    }
+</script>
+
+</html>
