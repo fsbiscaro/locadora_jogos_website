@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Painel do Usuário</title>
+    </head>
+
+    <body>
+        <div id="divUsuario"></div>
+        <a href="Usuarios.html">Usuarios</a>
+    </body>
+
+    <script src="/js/sessao.js"></script>
+
+    <script>
+        const obj = existeSessao();
+        const divUsuario = document.getElementById("divUsuario");
+        divUsuario.append(document.createTextNode(obj.nome + " - " + obj.email));
+    </script>
+
+</html>
